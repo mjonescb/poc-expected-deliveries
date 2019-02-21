@@ -18,11 +18,13 @@ namespace Domain.Bases
         protected async Task EmitAsync<TEvent>(TEvent @event)
             where TEvent : IEvent
         {
+            // get the potential new state
+            TSnapshot newState = UpdateState(@event);
             await publisher.SendAsync(@event);
-            UpdateState(@event);
+            Snapshot = newState;
         }
 
-        protected abstract void UpdateState<TEvent>(TEvent @event)
+        protected abstract TSnapshot UpdateState<TEvent>(TEvent @event)
             where TEvent : IEvent;
 
         public void Load(TSnapshot state)

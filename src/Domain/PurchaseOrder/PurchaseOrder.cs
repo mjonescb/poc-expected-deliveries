@@ -62,19 +62,26 @@
 
         #endregion
 
-        protected override void UpdateState<TEvent>(TEvent @event)
+        protected override Snapshot UpdateState<TEvent>(TEvent @event)
         {
-            @event.Match()
+            Snapshot state = Snapshot;
+            
+            @event
+                .Match()
                 .When<CreatedEvent>(e =>
                 {
                     id = e.Id;
-                    Snapshot.State = State.Submitted;
-                    Snapshot.ExpectedDeliveryDate = e.DeliveryExpected;
+                    
+                    state = state
+                        .ChangeState(State.Submitted)
+                        .SetExpectedDelivery(e.DeliveryExpected);
                 })
                 .When<CancelledEvent>(e =>
                 {
-                    Snapshot.State = State.Cancelled;
+                    state = state.ChangeState(State.Cancelled);
                 });
+
+            return state;
         }
     }
 }
