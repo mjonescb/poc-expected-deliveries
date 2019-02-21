@@ -6,7 +6,7 @@ namespace Domain.Tests.Infrastructure
     using Bases;
     using Domain.Infrastructure;
 
-    public class InMemorySendEvents : ISendEvents
+    public class InMemoryEventBus : ISendEvents
     {
         readonly List<IEvent> raisedEvents = new List<IEvent>();
         

@@ -22,7 +22,7 @@
 
         public async Task Handle(CreateCommand command)
         {
-            if(Snapshot.State != PurchaseOrderState.None)
+            if(Snapshot.State != State.None)
             {
                 throw new InvalidOperationException();
             }
@@ -36,7 +36,7 @@
 
         public async Task Handle(CancelCommand command)
         {
-            if(Snapshot.State != PurchaseOrderState.Submitted)
+            if(Snapshot.State != State.Submitted)
             {
                 throw new InvalidOperationException();
             }
@@ -49,7 +49,7 @@
 
         public async Task Handle(CheckCommand command)
         {
-            if(Snapshot.State != PurchaseOrderState.Submitted)
+            if(Snapshot.State != State.Submitted)
             {
                 return;
             }
@@ -68,12 +68,12 @@
                 .When<CreatedEvent>(e =>
                 {
                     id = e.Id;
-                    Snapshot.State = PurchaseOrderState.Submitted;
+                    Snapshot.State = State.Submitted;
                     Snapshot.ExpectedDeliveryDate = e.DeliveryExpected;
                 })
                 .When<CancelledEvent>(e =>
                 {
-                    Snapshot.State = PurchaseOrderState.Cancelled;
+                    Snapshot.State = State.Cancelled;
                 });
         }
     }

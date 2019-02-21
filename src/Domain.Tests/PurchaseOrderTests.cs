@@ -16,7 +16,7 @@ namespace Domain.Tests
         [Category("Happy path")]
         public async Task CanCreateAndCancelOrder()
         {
-            InMemorySendEvents bus = new InMemorySendEvents();
+            InMemoryEventBus bus = new InMemoryEventBus();
             PurchaseOrder sut = new PurchaseOrder(bus);
 
             await sut.Handle(new CreateCommand
@@ -38,7 +38,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task CancellationSuggestedOutsideWindow()
         {
-            InMemorySendEvents bus = new InMemorySendEvents();
+            InMemoryEventBus bus = new InMemoryEventBus();
             PurchaseOrder sut = new PurchaseOrder(bus);
 
             await sut.Handle(new CreateCommand
@@ -59,7 +59,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedWithinWindow()
         {
-            InMemorySendEvents bus = new InMemorySendEvents();
+            InMemoryEventBus bus = new InMemoryEventBus();
             PurchaseOrder sut = new PurchaseOrder(bus);
 
             await sut.Handle(new CreateCommand
@@ -80,7 +80,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedIfAlreadyCancelled()
         {
-            InMemorySendEvents bus = new InMemorySendEvents();
+            InMemoryEventBus bus = new InMemoryEventBus();
             PurchaseOrder sut = new PurchaseOrder(bus);
 
             await sut.Handle(new CreateCommand
@@ -106,7 +106,7 @@ namespace Domain.Tests
         [Category("Exception cases")]
         public async Task CantCancelAnOrderBeforeCreated()
         {
-            InMemorySendEvents bus = new InMemorySendEvents();
+            InMemoryEventBus bus = new InMemoryEventBus();
             PurchaseOrder sut = new PurchaseOrder(bus);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>

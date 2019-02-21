@@ -5,7 +5,7 @@ namespace Domain.PurchaseOrder
 
     public class Snapshot : AggregateRootState
     {
-        public PurchaseOrderState State { get; set; } = PurchaseOrderState.None;
+        public State State { get; set; } = State.None;
 
         public DateTime? ExpectedDeliveryDate { get; set; } = default(DateTime?);
     }

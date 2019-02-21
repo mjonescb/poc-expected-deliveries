@@ -1,6 +1,6 @@
 namespace Domain.PurchaseOrder
 {
-    public enum PurchaseOrderState
+    public enum State
     {
         None,
         Submitted,
