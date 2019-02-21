@@ -4,6 +4,7 @@ namespace Domain.Bases
     using Infrastructure;
 
     public abstract class AggregateRoot<TSnapshot>
+        where TSnapshot : AggregateRootState
     {
         readonly ISendEvents publisher;
 

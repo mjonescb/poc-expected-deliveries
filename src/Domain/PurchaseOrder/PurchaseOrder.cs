@@ -9,20 +9,13 @@
     using Infrastructure;
     using Time;
 
-    public class PurchaseOrderSnapshot
-    {
-        public PurchaseOrderState State { get; set; } = PurchaseOrderState.None;
-
-        public DateTime? ExpectedDeliveryDate { get; set; } = default(DateTime?);
-    }
-
-    public class PurchaseOrder : AggregateRoot<PurchaseOrderSnapshot>
+    public class PurchaseOrder : AggregateRoot<Snapshot>
     {
         int id = 0;
 
         public PurchaseOrder(ISendEvents publisher) : base(publisher)
         {
-            Snapshot = new PurchaseOrderSnapshot();
+            Snapshot = new Snapshot();
         }
 
         #region Command handlers
