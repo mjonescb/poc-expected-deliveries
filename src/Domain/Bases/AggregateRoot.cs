@@ -25,6 +25,8 @@ namespace Domain.Bases
             TSnapshot newState = UpdateState(@event);
             await documentStore.StoreAsync(newState);
             Snapshot = newState;
+            Snapshot.IncrementVersion();
+
             await publisher.SendAsync(@event);
         }
 

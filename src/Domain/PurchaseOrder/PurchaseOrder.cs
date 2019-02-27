@@ -74,14 +74,13 @@
                 .When<CreatedEvent>(e =>
                 {
                     id = e.Id;
-                    
-                    state = state
-                        .ChangeState(State.Submitted)
-                        .SetExpectedDelivery(e.DeliveryExpected);
+
+                    state.State = State.Submitted;
+                    state.ExpectedDeliveryDate = e.DeliveryExpected;
                 })
                 .When<CancelledEvent>(e =>
                 {
-                    state = state.ChangeState(State.Cancelled);
+                    state.State = State.Cancelled;
                 });
 
             return state;
