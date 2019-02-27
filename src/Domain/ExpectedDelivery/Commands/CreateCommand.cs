@@ -4,7 +4,7 @@ namespace Domain.ExpectedDelivery.Commands
 
     public class CreateCommand
     {
-        public int Id { get; set; }
+        public int PurchaseOrderLineId { get; set; }
         public DateTime DeliveryDate { get; set; }
     }
 }

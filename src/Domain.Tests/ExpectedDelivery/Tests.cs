@@ -29,13 +29,13 @@ namespace Domain.Tests.ExpectedDelivery
 
             await sut.Handle(new CreateCommand
             {
-                Id = 123,
+                PurchaseOrderLineId = 123,
                 DeliveryDate = new DateTime(2019, 2, 28)
             });
 
             await sut.Handle(new CancelCommand
             {
-                Id = 123
+                PurchaseOrderLineId = 123
             });
             
             Assert.True(bus.WasRaised<CreatedEvent>());
@@ -50,7 +50,7 @@ namespace Domain.Tests.ExpectedDelivery
 
             await sut.Handle(new CreateCommand
             {
-                Id = 123,
+                PurchaseOrderLineId = 123,
                 DeliveryDate = DateTime.Today
             });
 
@@ -70,7 +70,7 @@ namespace Domain.Tests.ExpectedDelivery
 
             await sut.Handle(new CreateCommand
             {
-                Id = 123,
+                PurchaseOrderLineId = 123,
                 DeliveryDate = DateTime.Today
             });
 
@@ -90,13 +90,13 @@ namespace Domain.Tests.ExpectedDelivery
 
             await sut.Handle(new CreateCommand
             {
-                Id = 123,
+                PurchaseOrderLineId = 123,
                 DeliveryDate = DateTime.Today
             });
 
             using(Clock.Adjust(TimeSpan.FromDays(3)))
             {
-                await sut.Handle(new CancelCommand { Id = 123 });
+                await sut.Handle(new CancelCommand { PurchaseOrderLineId = 123 });
             }
 
             using(Clock.Adjust(TimeSpan.FromDays(70)))
@@ -116,7 +116,7 @@ namespace Domain.Tests.ExpectedDelivery
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 sut.Handle(new CancelCommand
                 {
-                    Id = 123
+                    PurchaseOrderLineId = 123
                 }));
         }
     }

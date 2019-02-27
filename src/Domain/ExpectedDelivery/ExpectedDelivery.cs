@@ -31,7 +31,7 @@
 
             await EmitAsync(new CreatedEvent
             {
-                PurchaseOrderLineId = command.Id,
+                PurchaseOrderLineId = command.PurchaseOrderLineId,
                 DeliveryExpected = command.DeliveryDate
             });
         }
