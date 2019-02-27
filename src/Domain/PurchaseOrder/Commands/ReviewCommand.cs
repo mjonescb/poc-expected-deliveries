@@ -1,6 +1,6 @@
 namespace Domain.PurchaseOrder.Commands
 {
-    public class CheckCommand
+    public class ReviewCommand
     {
     }
 }

@@ -12,12 +12,20 @@ namespace Domain.Tests
 
     public class PurchaseOrderTests
     {
+        readonly InMemoryDocumentStore store;
+        readonly InMemoryEventBus bus;
+
+        public PurchaseOrderTests()
+        {
+            store = new InMemoryDocumentStore();
+            bus = new InMemoryEventBus();
+        }
+
         [Fact]
         [Category("Happy path")]
         public async Task CanCreateAndCancelOrder()
         {
-            InMemoryEventBus bus = new InMemoryEventBus();
-            PurchaseOrder sut = new PurchaseOrder(bus);
+            PurchaseOrder sut = new PurchaseOrder(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -38,8 +46,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task CancellationSuggestedOutsideWindow()
         {
-            InMemoryEventBus bus = new InMemoryEventBus();
-            PurchaseOrder sut = new PurchaseOrder(bus);
+            PurchaseOrder sut = new PurchaseOrder(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -49,7 +56,7 @@ namespace Domain.Tests
 
             using(Clock.Adjust(TimeSpan.FromDays(61)))
             {
-                await sut.Handle(new CheckCommand());
+                await sut.Handle(new ReviewCommand());
 
                 Assert.True(bus.WasRaised<CancellationSuggestedEvent>());
             }
@@ -59,8 +66,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedWithinWindow()
         {
-            InMemoryEventBus bus = new InMemoryEventBus();
-            PurchaseOrder sut = new PurchaseOrder(bus);
+            PurchaseOrder sut = new PurchaseOrder(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -70,7 +76,7 @@ namespace Domain.Tests
 
             using(Clock.Adjust(TimeSpan.FromDays(59)))
             {
-                await sut.Handle(new CheckCommand());
+                await sut.Handle(new ReviewCommand());
 
                 Assert.True(bus.WasNotRaised<CancellationSuggestedEvent>());
             }
@@ -80,8 +86,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedIfAlreadyCancelled()
         {
-            InMemoryEventBus bus = new InMemoryEventBus();
-            PurchaseOrder sut = new PurchaseOrder(bus);
+            PurchaseOrder sut = new PurchaseOrder(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -96,7 +101,7 @@ namespace Domain.Tests
 
             using(Clock.Adjust(TimeSpan.FromDays(70)))
             {
-                await sut.Handle(new CheckCommand());
+                await sut.Handle(new ReviewCommand());
 
                 Assert.True(bus.WasNotRaised<CancellationSuggestedEvent>());
             }
@@ -106,8 +111,7 @@ namespace Domain.Tests
         [Category("Exception cases")]
         public async Task CantCancelAnOrderBeforeCreated()
         {
-            InMemoryEventBus bus = new InMemoryEventBus();
-            PurchaseOrder sut = new PurchaseOrder(bus);
+            PurchaseOrder sut = new PurchaseOrder(bus, store);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 sut.Handle(new CancelCommand

@@ -13,7 +13,9 @@
     {
         int id = 0;
 
-        public PurchaseOrder(ISendEvents publisher) : base(publisher)
+        public PurchaseOrder(
+            ISendEvents publisher,
+            IStoreDocuments documentStore) : base(publisher, documentStore)
         {
             Snapshot = new Snapshot();
         }
@@ -47,14 +49,15 @@
             });
         }
 
-        public async Task Handle(CheckCommand command)
+        public async Task Handle(ReviewCommand command)
         {
             if(Snapshot.State != State.Submitted)
             {
                 return;
             }
 
-            if(Clock.Current.GetNow() > Snapshot.ExpectedDeliveryDate + TimeSpan.FromDays(60))
+            if(Clock.Current.GetNow() >
+               Snapshot.ExpectedDeliveryDate + TimeSpan.FromDays(60))
             {
                 await EmitAsync(new CancellationSuggestedEvent());
             }

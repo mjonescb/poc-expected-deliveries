@@ -7,21 +7,25 @@ namespace Domain.Bases
         where TSnapshot : AggregateRootState
     {
         readonly ISendEvents publisher;
+        readonly IStoreDocuments documentStore;
 
         protected TSnapshot Snapshot { get; set; }
 
-        protected AggregateRoot(ISendEvents publisher)
+        protected AggregateRoot(
+            ISendEvents publisher,
+            IStoreDocuments documentStore)
         {
             this.publisher = publisher;
+            this.documentStore = documentStore;
         }
 
         protected async Task EmitAsync<TEvent>(TEvent @event)
             where TEvent : IEvent
         {
-            // get the potential new state
             TSnapshot newState = UpdateState(@event);
-            await publisher.SendAsync(@event);
+            await documentStore.StoreAsync(newState);
             Snapshot = newState;
+            await publisher.SendAsync(@event);
         }
 
         protected abstract TSnapshot UpdateState<TEvent>(TEvent @event)
