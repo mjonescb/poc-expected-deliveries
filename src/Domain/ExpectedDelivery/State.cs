@@ -1,4 +1,4 @@
-namespace Domain.PurchaseOrder
+namespace Domain.ExpectedDelivery
 {
     public enum State
     {

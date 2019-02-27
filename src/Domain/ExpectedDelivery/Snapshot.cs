@@ -1,4 +1,4 @@
-namespace Domain.PurchaseOrder
+namespace Domain.ExpectedDelivery
 {
     using System;
     using Bases;
@@ -7,7 +7,7 @@ namespace Domain.PurchaseOrder
     {
         public static readonly Snapshot Default = new Snapshot()
         {
-            State = Domain.PurchaseOrder.State.None,
+            State = State.None,
             ExpectedDeliveryDate = default(DateTime?)
         };
 

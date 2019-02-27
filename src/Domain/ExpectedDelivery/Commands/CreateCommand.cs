@@ -1,4 +1,4 @@
-namespace Domain.PurchaseOrder.Commands
+namespace Domain.ExpectedDelivery.Commands
 {
     using System;
 

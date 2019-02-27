@@ -1,4 +1,4 @@
-﻿namespace Domain.PurchaseOrder
+﻿namespace Domain.ExpectedDelivery
 {
     using System;
     using System.Threading.Tasks;
@@ -9,11 +9,11 @@
     using Infrastructure;
     using Time;
 
-    public class PurchaseOrder : AggregateRoot<Snapshot>
+    public class ExpectedDelivery : AggregateRoot<Snapshot>
     {
         int id = 0;
 
-        public PurchaseOrder(
+        public ExpectedDelivery(
             ISendEvents publisher,
             IStoreDocuments documentStore) : base(publisher, documentStore)
         {
@@ -31,7 +31,7 @@
 
             await EmitAsync(new CreatedEvent
             {
-                Id = command.Id,
+                PurchaseOrderLineId = command.Id,
                 DeliveryExpected = command.DeliveryDate
             });
         }
@@ -73,7 +73,7 @@
                 .Match()
                 .When<CreatedEvent>(e =>
                 {
-                    id = e.Id;
+                    id = e.PurchaseOrderLineId;
 
                     state.State = State.Submitted;
                     state.ExpectedDeliveryDate = e.DeliveryExpected;

@@ -1,4 +1,4 @@
-namespace Domain.PurchaseOrder.Events
+namespace Domain.ExpectedDelivery.Events
 {
     using Bases;
 

@@ -1,21 +1,21 @@
-namespace Domain.Tests
+namespace Domain.Tests.ExpectedDelivery
 {
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
-    using Xunit;
+    using Domain.ExpectedDelivery.Commands;
+    using Domain.ExpectedDelivery.Events;
     using Infrastructure;
-    using PurchaseOrder;
-    using PurchaseOrder.Commands;
-    using PurchaseOrder.Events;
+    using Xunit;
     using Time;
+    using ExpectedDelivery = Domain.ExpectedDelivery.ExpectedDelivery;
 
-    public class PurchaseOrderTests
+    public class Tests
     {
         readonly InMemoryDocumentStore store;
         readonly InMemoryEventBus bus;
 
-        public PurchaseOrderTests()
+        public Tests()
         {
             store = new InMemoryDocumentStore();
             bus = new InMemoryEventBus();
@@ -25,7 +25,7 @@ namespace Domain.Tests
         [Category("Happy path")]
         public async Task CanCreateAndCancelOrder()
         {
-            PurchaseOrder sut = new PurchaseOrder(bus, store);
+            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -46,7 +46,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task CancellationSuggestedOutsideWindow()
         {
-            PurchaseOrder sut = new PurchaseOrder(bus, store);
+            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -66,7 +66,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedWithinWindow()
         {
-            PurchaseOrder sut = new PurchaseOrder(bus, store);
+            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -86,7 +86,7 @@ namespace Domain.Tests
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedIfAlreadyCancelled()
         {
-            PurchaseOrder sut = new PurchaseOrder(bus, store);
+            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -111,7 +111,7 @@ namespace Domain.Tests
         [Category("Exception cases")]
         public async Task CantCancelAnOrderBeforeCreated()
         {
-            PurchaseOrder sut = new PurchaseOrder(bus, store);
+            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 sut.Handle(new CancelCommand

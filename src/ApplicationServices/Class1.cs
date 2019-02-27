@@ -1,7 +1,7 @@
 ﻿namespace ApplicationServices
 {
     using Domain.Bases;
-    using Domain.PurchaseOrder.Events;
+    using Domain.ExpectedDelivery.Events;
 
     public class PurchaseOrderEventHandlers : IEventHandler<CancellationSuggestedEvent>
     {
