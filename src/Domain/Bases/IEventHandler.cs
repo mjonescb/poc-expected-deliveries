@@ -1,7 +1,9 @@
 namespace Domain.Bases
 {
+    using System.Threading.Tasks;
+
     public interface IEventHandler<in TEvent> where TEvent : IEvent
     {
-        void Handle(TEvent @event);
+        Task HandleAsync(TEvent @event);
     }
 }

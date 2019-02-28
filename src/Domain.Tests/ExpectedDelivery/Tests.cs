@@ -51,6 +51,7 @@ namespace Domain.Tests.ExpectedDelivery
             await sut.Handle(new CreateCommand
             {
                 PurchaseOrderLineId = 123,
+                Quantity = 50,
                 DeliveryDate = DateTime.Today
             });
 

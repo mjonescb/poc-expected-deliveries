@@ -4,5 +4,6 @@ namespace Domain.ExpectedDelivery.Events
 
     public class CancellationSuggestedEvent : IEvent
     {
+        public int PurchaseOrderLineId { get; set; }
     }
 }
