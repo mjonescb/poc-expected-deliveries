@@ -20,12 +20,6 @@ namespace Domain.Tests.Infrastructure
             return !WasRaised<TEvent>();
         }
         
-        public Task SendAsync<TEvent>(TEvent @event) where TEvent : INotification
-        {
-            raisedEvents.Add(@event);
-            return Task.CompletedTask;
-        }
-
         public Task<TResponse> Send<TResponse>(
             IRequest<TResponse> request,
             CancellationToken cancellationToken = new CancellationToken())
