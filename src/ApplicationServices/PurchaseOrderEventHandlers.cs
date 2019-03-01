@@ -8,13 +8,19 @@
     using Domain.Suggestion.Commands;
     using MediatR;
 
-    public class PurchaseOrderEventHandlers : INotificationHandler<CancellationSuggestedEvent>
+    public class PurchaseOrderEventHandlers :
+        INotificationHandler<CancellationSuggestedEvent>,
+        INotificationHandler<CreatedEvent>
     {
         readonly IAggregateRootFactory factory;
+        readonly IScheduleCommands commandScheduler;
 
-        public PurchaseOrderEventHandlers(IAggregateRootFactory factory)
+        public PurchaseOrderEventHandlers(
+            IAggregateRootFactory factory,
+            IScheduleCommands commandScheduler)
         {
             this.factory = factory;
+            this.commandScheduler = commandScheduler;
         }
 
         public async Task Handle(
@@ -30,6 +36,17 @@
                 Action = "create",
                 PurchaseOrderLineId = notification.PurchaseOrderLineId
             });
+        }
+
+        public async Task Handle(
+            CreatedEvent notification,
+            CancellationToken cancellationToken)
+        {
+            await commandScheduler.SetCallbackAsync(
+                "0 6 * * *", // daily at 6am
+                "/api/expected-deliveries/1/reviews", // url
+                "POST", // HTTP method
+                new { }); // object to return
         }
     }
 }
