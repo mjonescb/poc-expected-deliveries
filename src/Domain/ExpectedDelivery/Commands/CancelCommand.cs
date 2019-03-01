@@ -1,6 +1,8 @@
 namespace Domain.ExpectedDelivery.Commands
 {
-    public class CancelCommand
+    using MediatR;
+
+    public class CancelCommand : IRequest
     {
         public int PurchaseOrderLineId { get; set; }
     }

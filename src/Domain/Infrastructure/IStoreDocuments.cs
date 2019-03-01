@@ -5,6 +5,10 @@ namespace Domain.Infrastructure
 
     public interface IStoreDocuments
     {
-        Task StoreAsync<TState>(TState state) where TState : AggregateRootState;
+        Task StoreAsync<TState, TKey>(TState state)
+            where TState : AggregateRootState<TKey>;
+
+        Task<TState> GetAsync<TState, TKey>(TKey key)
+            where TState : AggregateRootState<TKey>;
     }
 }

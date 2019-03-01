@@ -1,8 +1,8 @@
 namespace Domain.Suggestion.Events
 {
-    using Bases;
+    using MediatR;
 
-    public class SuggestedCreatedEvent : IEvent
+    public class SuggestedCreatedEvent : INotification
     {
         public int PurchaseOrderLineId { get; set; }
         public string Action { get; set; }

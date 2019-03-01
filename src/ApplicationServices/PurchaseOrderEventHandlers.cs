@@ -1,13 +1,14 @@
 ﻿namespace ApplicationServices
 {
+    using System.Threading;
     using System.Threading.Tasks;
-    using Domain.Bases;
     using Domain.ExpectedDelivery.Events;
     using Domain.Infrastructure;
     using Domain.Suggestion;
     using Domain.Suggestion.Commands;
+    using MediatR;
 
-    public class PurchaseOrderEventHandlers : IEventHandler<CancellationSuggestedEvent>
+    public class PurchaseOrderEventHandlers : INotificationHandler<CancellationSuggestedEvent>
     {
         readonly IAggregateRootFactory factory;
 
@@ -16,14 +17,18 @@
             this.factory = factory;
         }
 
-        public async Task HandleAsync(CancellationSuggestedEvent @event)
+        public async Task Handle(
+            CancellationSuggestedEvent notification,
+            CancellationToken cancellationToken)
         {
-            Suggestion suggestion = factory.Create<Suggestion, State>();
+            Suggestion suggestion = await factory
+                .LoadAsync<Suggestion, State, int>(
+                    notification.PurchaseOrderLineId);
 
             await suggestion.Handle(new CreateCommand
             {
                 Action = "create",
-                PurchaseOrderLineId = @event.PurchaseOrderLineId
+                PurchaseOrderLineId = notification.PurchaseOrderLineId
             });
         }
     }

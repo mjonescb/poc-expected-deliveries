@@ -1,5 +1,6 @@
 namespace Domain.Tests.IoC
 {
+    using System.Threading.Tasks;
     using Bases;
     using Domain.Infrastructure;
     using SimpleInjector;
@@ -7,17 +8,25 @@ namespace Domain.Tests.IoC
     public class SimpleInjectorAggregateRootFactory : IAggregateRootFactory
     {
         readonly Container container;
+        readonly IStoreDocuments documentStore;
 
-        public SimpleInjectorAggregateRootFactory(Container container)
+        public SimpleInjectorAggregateRootFactory(
+            Container container,
+            IStoreDocuments documentStore)
         {
             this.container = container;
+            this.documentStore = documentStore;
         }
 
-        public TAggregate Create<TAggregate, TState>()
-            where TAggregate : AggregateRoot<TState>
-            where TState : AggregateRootState
+        public async Task<TAggregate> LoadAsync<TAggregate, TState, TKey>(TKey id)
+            where TAggregate : AggregateRoot<TState, TKey>
+            where TState : AggregateRootState<TKey>
         {
-            return container.GetInstance<TAggregate>();
+            TAggregate result = container.GetInstance<TAggregate>();
+            TState state = await documentStore.GetAsync<TState, TKey>(id);
+
+            result.Load(state);
+            return result;
         }
     }
 }

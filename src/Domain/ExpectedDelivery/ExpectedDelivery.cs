@@ -7,14 +7,13 @@
     using Events;
     using Helpers;
     using Infrastructure;
+    using MediatR;
     using Time;
 
-    public class ExpectedDelivery : AggregateRoot<Snapshot>
+    public class ExpectedDelivery : AggregateRoot<Snapshot, int>
     {
-        int id = 0;
-
         public ExpectedDelivery(
-            ISendEvents publisher,
+            IMediator publisher,
             IStoreDocuments documentStore) : base(publisher, documentStore)
         {
             Snapshot = new Snapshot();
@@ -45,7 +44,7 @@
 
             await EmitAsync(new CancelledEvent
             {
-                Id = id
+                Id = Snapshot.Id
             });
         }
 
@@ -73,8 +72,7 @@
                 .Match()
                 .When<CreatedEvent>(e =>
                 {
-                    id = e.PurchaseOrderLineId;
-
+                    state.Id = e.PurchaseOrderLineId;
                     state.State = State.Submitted;
                     state.ExpectedDeliveryDate = e.DeliveryExpected;
                 })

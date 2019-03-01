@@ -1,8 +1,9 @@
 namespace Domain.ExpectedDelivery.Commands
 {
     using System;
+    using MediatR;
 
-    public class CreateCommand
+    public class CreateCommand : IRequest
     {
         public int PurchaseOrderLineId { get; set; }
         public DateTime DeliveryDate { get; set; }

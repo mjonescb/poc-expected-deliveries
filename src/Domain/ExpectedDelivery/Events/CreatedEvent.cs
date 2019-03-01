@@ -1,9 +1,9 @@
 namespace Domain.ExpectedDelivery.Events
 {
     using System;
-    using Bases;
+    using MediatR;
 
-    public class CreatedEvent : IEvent
+    public class CreatedEvent : INotification
     {
         public int PurchaseOrderLineId { get; set; }
         public DateTime DeliveryExpected { get; set; }

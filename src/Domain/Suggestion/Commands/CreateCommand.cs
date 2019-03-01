@@ -1,6 +1,8 @@
 namespace Domain.Suggestion.Commands
 {
-    public class CreateCommand
+    using MediatR;
+
+    public class CreateCommand : IRequest
     {
         public int PurchaseOrderLineId { get; set; }
         public string Action { get; set; }

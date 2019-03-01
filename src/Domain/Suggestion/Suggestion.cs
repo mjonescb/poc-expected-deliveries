@@ -6,11 +6,12 @@ namespace Domain.Suggestion
     using Events;
     using Helpers;
     using Infrastructure;
+    using MediatR;
 
-    public class Suggestion : AggregateRoot<State>
+    public class Suggestion : AggregateRoot<State, int>
     {
         public Suggestion(
-            ISendEvents publisher,
+            IMediator publisher,
             IStoreDocuments documentStore) : base(publisher, documentStore)
         {
         }

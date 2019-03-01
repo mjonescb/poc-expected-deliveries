@@ -3,7 +3,7 @@ namespace Domain.ExpectedDelivery
     using System;
     using Bases;
 
-    public class Snapshot : AggregateRootState
+    public class Snapshot : AggregateRootState<int>
     {
         public static readonly Snapshot Default = new Snapshot()
         {

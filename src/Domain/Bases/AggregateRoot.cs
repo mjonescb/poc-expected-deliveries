@@ -2,17 +2,18 @@ namespace Domain.Bases
 {
     using System.Threading.Tasks;
     using Infrastructure;
+    using MediatR;
 
-    public abstract class AggregateRoot<TSnapshot>
-        where TSnapshot : AggregateRootState
+    public abstract class AggregateRoot<TSnapshot, TKey>
+        where TSnapshot : AggregateRootState<TKey>
     {
-        readonly ISendEvents publisher;
+        readonly IMediator publisher;
         readonly IStoreDocuments documentStore;
 
         protected TSnapshot Snapshot { get; set; }
 
         protected AggregateRoot(
-            ISendEvents publisher,
+            IMediator publisher,
             IStoreDocuments documentStore)
         {
             this.publisher = publisher;
@@ -20,18 +21,18 @@ namespace Domain.Bases
         }
 
         protected async Task EmitAsync<TEvent>(TEvent @event)
-            where TEvent : IEvent
+            where TEvent : INotification
         {
             TSnapshot newState = UpdateState(@event);
-            await documentStore.StoreAsync(newState);
+            await documentStore.StoreAsync<TSnapshot, TKey>(newState);
             Snapshot = newState;
             Snapshot.IncrementVersion();
 
-            await publisher.SendAsync(@event);
+            await publisher.Publish(@event);
         }
 
         protected abstract TSnapshot UpdateState<TEvent>(TEvent @event)
-            where TEvent : IEvent;
+            where TEvent : INotification;
 
         public void Load(TSnapshot state)
         {

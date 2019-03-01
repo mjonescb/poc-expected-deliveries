@@ -1,8 +1,8 @@
 namespace Domain.ExpectedDelivery.Events
 {
-    using Bases;
+    using MediatR;
 
-    public class CancellationSuggestedEvent : IEvent
+    public class CancellationSuggestedEvent : INotification
     {
         public int PurchaseOrderLineId { get; set; }
     }

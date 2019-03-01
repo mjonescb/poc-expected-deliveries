@@ -1,8 +1,8 @@
 namespace Domain.ExpectedDelivery.Events
 {
-    using Bases;
+    using MediatR;
 
-    public class CancelledEvent : IEvent
+    public class CancelledEvent : INotification
     {
         public int Id { get; set; }
     }
