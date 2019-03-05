@@ -24,9 +24,9 @@ namespace Domain.Bases
             where TEvent : INotification
         {
             TSnapshot newState = UpdateState(@event);
+            newState.IncrementVersion();
             await documentStore.StoreAsync<TSnapshot, TKey>(newState);
             Snapshot = newState;
-            Snapshot.IncrementVersion();
 
             await publisher.Publish(@event);
         }
