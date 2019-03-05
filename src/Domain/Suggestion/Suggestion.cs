@@ -8,7 +8,7 @@ namespace Domain.Suggestion
     using Infrastructure;
     using MediatR;
 
-    public class Suggestion : AggregateRoot<State, int>
+    public class Suggestion : AggregateRoot<Snapshot, int>
     {
         public Suggestion(
             IMediator publisher,
@@ -25,18 +25,28 @@ namespace Domain.Suggestion
             });
         }
 
-        protected override State UpdateState<TEvent>(TEvent @event)
+        public Task Handle(AcceptCommand command)
         {
-            State newState = Snapshot;
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(DeclineCommand command)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected override Snapshot UpdateState<TEvent>(TEvent @event)
+        {
+            Snapshot newSnapshot = Snapshot;
             
             @event.Match()
                 .When<CreateCommand>(e =>
                 {
-                    newState.Action = e.Action;
-                    newState.PurchaseOrderLineId = e.PurchaseOrderLineId;
+                    newSnapshot.Action = e.Action;
+                    newSnapshot.PurchaseOrderLineId = e.PurchaseOrderLineId;
                 });
 
-            return newState;
+            return newSnapshot;
         }
     }
 }

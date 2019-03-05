@@ -28,7 +28,7 @@
             CancellationToken cancellationToken)
         {
             Suggestion suggestion = await factory
-                .LoadAsync<Suggestion, State, int>(
+                .LoadAsync<Suggestion, Snapshot, int>(
                     notification.PurchaseOrderLineId);
 
             await suggestion.Handle(new CreateCommand

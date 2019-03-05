@@ -1,10 +1,9 @@
 namespace Domain.Suggestion
 {
-    using Bases;
-
-    public class State : AggregateRootState<int>
+    public enum State
     {
-        public int PurchaseOrderLineId { get; set; }
-        public string Action { get; set; }
+        None,
+        Accepted,
+        Declined
     }
 }
