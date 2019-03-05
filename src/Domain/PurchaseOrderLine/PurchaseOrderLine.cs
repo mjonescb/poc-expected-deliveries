@@ -1,4 +1,4 @@
-﻿namespace Domain.ExpectedDelivery
+﻿namespace Domain.PurchaseOrderLine
 {
     using System;
     using System.Threading.Tasks;
@@ -10,9 +10,9 @@
     using MediatR;
     using Time;
 
-    public class ExpectedDelivery : AggregateRoot<Snapshot, int>
+    public class PurchaseOrderLine : AggregateRoot<Snapshot, int>
     {
-        public ExpectedDelivery(
+        public PurchaseOrderLine(
             IMediator publisher,
             IStoreDocuments documentStore) : base(publisher, documentStore)
         {

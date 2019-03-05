@@ -1,14 +1,14 @@
-namespace Domain.Tests.ExpectedDelivery
+namespace Domain.Tests.PurchaseOrderLine
 {
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
-    using Domain.ExpectedDelivery.Commands;
-    using Domain.ExpectedDelivery.Events;
+    using Domain.PurchaseOrderLine;
+    using Domain.PurchaseOrderLine.Commands;
+    using Domain.PurchaseOrderLine.Events;
     using Infrastructure;
     using Xunit;
     using Time;
-    using ExpectedDelivery = Domain.ExpectedDelivery.ExpectedDelivery;
 
     public class Tests
     {
@@ -25,7 +25,7 @@ namespace Domain.Tests.ExpectedDelivery
         [Category("Happy path")]
         public async Task CanCreateAndCancelOrder()
         {
-            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
+            PurchaseOrderLine sut = new PurchaseOrderLine(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -46,7 +46,7 @@ namespace Domain.Tests.ExpectedDelivery
         [Category("Happy path, Cancellation")]
         public async Task CancellationSuggestedOutsideWindow()
         {
-            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
+            PurchaseOrderLine sut = new PurchaseOrderLine(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -67,7 +67,7 @@ namespace Domain.Tests.ExpectedDelivery
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedWithinWindow()
         {
-            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
+            PurchaseOrderLine sut = new PurchaseOrderLine(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -87,7 +87,7 @@ namespace Domain.Tests.ExpectedDelivery
         [Category("Happy path, Cancellation")]
         public async Task NoCancellationSuggestedIfAlreadyCancelled()
         {
-            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
+            PurchaseOrderLine sut = new PurchaseOrderLine(bus, store);
 
             await sut.Handle(new CreateCommand
             {
@@ -112,7 +112,7 @@ namespace Domain.Tests.ExpectedDelivery
         [Category("Exception cases")]
         public async Task CantCancelAnOrderBeforeCreated()
         {
-            ExpectedDelivery sut = new ExpectedDelivery(bus, store);
+            PurchaseOrderLine sut = new PurchaseOrderLine(bus, store);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 sut.Handle(new CancelCommand

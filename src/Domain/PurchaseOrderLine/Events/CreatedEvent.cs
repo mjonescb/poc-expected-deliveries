@@ -1,4 +1,4 @@
-namespace Domain.ExpectedDelivery.Events
+namespace Domain.PurchaseOrderLine.Events
 {
     using System;
     using MediatR;

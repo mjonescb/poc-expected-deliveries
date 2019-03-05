@@ -1,4 +1,4 @@
-namespace Domain.ExpectedDelivery
+namespace Domain.PurchaseOrderLine
 {
     using System;
     using Bases;

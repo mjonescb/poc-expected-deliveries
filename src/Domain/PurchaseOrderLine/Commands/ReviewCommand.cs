@@ -1,4 +1,4 @@
-namespace Domain.ExpectedDelivery.Commands
+namespace Domain.PurchaseOrderLine.Commands
 {
     using MediatR;
 
