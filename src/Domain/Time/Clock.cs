@@ -5,7 +5,7 @@ namespace Domain.Time
 
     public class Clock
     {
-        static AsyncLocal<Clock> CurrentValue { get; set; }
+        static AsyncLocal<Clock> CurrentValue { get; }
 
         public static Clock Current => CurrentValue.Value;
 
@@ -33,7 +33,7 @@ namespace Domain.Time
             return new Disposer();
         }
 
-        public class Disposer : IDisposable
+        class Disposer : IDisposable
         {
             public void Dispose()
             {
