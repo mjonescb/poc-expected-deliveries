@@ -15,7 +15,7 @@
             {
                 x.UseSimpleInjector(Container);
                 
-                x.Service<ExpectedDeliveriesService>(s =>
+                x.Service<SimpleTimerService>(s =>
                 {
                     s.ConstructUsingSimpleInjector();
                     s.WhenStarted(tc => tc.Start());
