@@ -33,12 +33,13 @@ namespace Domain.Tests.PurchaseOrderLine
                 DeliveryDate = new DateTime(2019, 2, 28)
             });
 
+            Assert.True(bus.WasRaised<CreatedEvent>());
+
             await sut.Handle(new CancelCommand
             {
                 PurchaseOrderLineId = 123
             });
-            
-            Assert.True(bus.WasRaised<CreatedEvent>());
+
             Assert.True(bus.WasRaised<CancelledEvent>());
         }
 

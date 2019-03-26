@@ -1,9 +1,8 @@
 namespace Domain.PurchaseOrderLine
 {
     using System;
-    using Bases;
 
-    public class Snapshot : AggregateRootState<int>
+    public class Snapshot
     {
         public static readonly Snapshot Default = new Snapshot()
         {
