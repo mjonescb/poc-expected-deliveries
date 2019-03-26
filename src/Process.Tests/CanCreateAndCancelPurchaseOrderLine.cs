@@ -8,7 +8,7 @@ namespace Process.Tests
     using SimpleInjector.Lifestyles;
     using Xunit;
 
-    public class CanCreateAndCancelPurhcaseOrderLine : ProcessTestBase
+    public class CanCreateAndCancelPurchaseOrderLine : ProcessTestBase
     {
         [Fact]
         public async Task Test()
@@ -29,7 +29,7 @@ namespace Process.Tests
                     PurchaseOrderLineId = 1,
                 });
 
-                Notifications().WasReceived<CancelledEvent>();
+                Assert.True(Notifications().WasReceived<CancelledEvent>());
             }
         }
     }

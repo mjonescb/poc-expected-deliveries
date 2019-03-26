@@ -1,6 +1,7 @@
 ﻿namespace Domain.PurchaseOrderLine
 {
     using System;
+    using Time;
 
     public class PurchaseOrderLine
     {
@@ -24,5 +25,33 @@
         {
             isCancelled = true;
         }
+
+        public ReviewOutcome Review()
+        {
+            if(isCancelled)
+            {
+                return ReviewOutcome.None;
+            }
+
+            if(Clock.Current.GetNow() + TimeSpan.FromDays(60) > expectedDeliveryDate)
+            {
+                return new CancellationSuggested();
+            }
+            
+            return ReviewOutcome.None;
+        }
+    }
+
+    public class ReviewOutcome
+    {
+        public static readonly ReviewOutcome None = new ReviewOutcome();
+
+        protected ReviewOutcome()
+        {
+        }
+    }
+
+    public class CancellationSuggested : ReviewOutcome
+    {
     }
 }

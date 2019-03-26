@@ -6,9 +6,9 @@ namespace Process.Tests.Bases
 
     public abstract class ProcessTestBase
     {
-        protected Func<IMediator> Mediator;
+        protected Func<IMediator> Mediator { get; }
 
-        protected Func<InMemoryNotificationStore> Notifications;
+        protected Func<InMemoryNotificationStore> Notifications { get; }
 
         protected ProcessTestBase()
         {
