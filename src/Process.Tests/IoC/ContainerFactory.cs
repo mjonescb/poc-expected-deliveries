@@ -16,13 +16,13 @@ namespace Process.Tests.IoC
 
     public static class ContainerFactory
     {
-        static readonly Lazy<Container> value;
+        static readonly Lazy<Container> Value;
 
-        public static Container Instance => value.Value;
+        public static Container Instance => Value.Value;
 
         static ContainerFactory()
         {
-            value = new Lazy<Container>(BuildContainer);
+            Value = new Lazy<Container>(BuildContainer);
         }
 
         static Container BuildContainer()
