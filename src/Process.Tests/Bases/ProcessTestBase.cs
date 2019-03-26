@@ -1,6 +1,7 @@
 namespace Process.Tests.Bases
 {
     using System;
+    using Doubles;
     using IoC;
     using MediatR;
 

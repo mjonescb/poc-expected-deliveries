@@ -1,4 +1,4 @@
-namespace Process.Tests.IoC
+namespace Process.Tests.Doubles
 {
     using System;
     using log4net.Core;

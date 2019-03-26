@@ -3,9 +3,8 @@ namespace Process.Tests.IoC
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Threading.Tasks;
     using Aspects.Notifications;
-    using Domain.Utilities;
+    using Doubles;
     using FluentValidation;
     using log4net.Core;
     using MediatR;
@@ -84,48 +83,6 @@ namespace Process.Tests.IoC
             container.Verify();
 
             return container;
-        }
-    }
-
-    public class InMemoryDocumentStore : IDocumentStore
-    {
-        readonly IDictionary<string, object> innerDict;
-
-        public InMemoryDocumentStore()
-        {
-            innerDict = new Dictionary<string, object>();
-        }
-
-        public Task StoreAsync<TDocument>(string key, TDocument toStore)
-        {
-            Ensure.IsNotNull(toStore, nameof(toStore));
-            Ensure.IsNotNullOrEmpty(key, nameof(key));
-
-            if(innerDict.ContainsKey(key))
-            {
-                innerDict[key] = toStore;
-                return Task.CompletedTask;
-            }
-
-            innerDict.Add(key, toStore);
-            return Task.CompletedTask;
-        }
-
-        public Task<TDocument> GetAsync<TDocument>(string key)
-        {
-            TDocument result = default(TDocument);
-            
-            if(innerDict.ContainsKey(key))
-            {
-                result = (TDocument) innerDict[key];
-            }
-
-            return Task.FromResult(result);
-        }
-
-        public Task<bool> ExistsAsync(string key)
-        {
-            return Task.FromResult(innerDict.ContainsKey(key));
         }
     }
 }
