@@ -7,11 +7,11 @@ namespace Process.Tests.IoC
     using Aspects.Notifications;
     using Doubles;
     using FluentValidation;
-    using log4net.Core;
     using MediatR;
     using MediatR.Pipeline;
     using Pipeline;
     using Ports;
+    using Serilog;
     using SimpleInjector;
     using SimpleInjector.Lifestyles;
 

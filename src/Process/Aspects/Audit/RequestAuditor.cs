@@ -1,9 +1,9 @@
 namespace Process.Aspects.Audit
 {
     using System.Threading.Tasks;
-    using log4net.Core;
     using MediatR.Pipeline;
     using Pipeline;
+    using Serilog;
 
     public class RequestAuditor<TRequest, TResponse>
         : IRequestPostProcessor<TRequest, TResponse>
@@ -17,18 +17,19 @@ namespace Process.Aspects.Audit
 
         public Task Process(TRequest request, TResponse response)
         {
-            string logMessage = $"Handled {request.GetType().Name}";
-            
-            if(!(response is CommandResult))
+            if(response is CommandResult)
             {
-                logMessage += $", result={response.GetType().Name}";
+                logger.Information(
+                    "Handled command {commandName}",
+                    request.GetType().Name);
             }
-
-            logger.Log(
-                request.GetType(),
-                Level.Info,
-                logMessage,
-                null);
+            else
+            {
+                logger.Information(
+                    "Handled query {queryName}, result was {result}",
+                    request.GetType().Name,
+                    response.GetType().Name);
+            }
 
             return Task.CompletedTask;
         }

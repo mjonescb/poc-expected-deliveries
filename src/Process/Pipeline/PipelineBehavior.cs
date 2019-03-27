@@ -8,8 +8,8 @@ namespace Process.Pipeline
     using Aspects.Validation;
     using FluentValidation;
     using FluentValidation.Results;
-    using log4net.Core;
     using MediatR;
+    using Serilog;
 
     public class PipelineBehavior<TRequest, TResponse>
         : IPipelineBehavior<TRequest, TResponse>
@@ -49,12 +49,9 @@ namespace Process.Pipeline
             }
             catch(Exception exception)
             {
-                logger.Log(
-                    GetType(),
-                    Level.Error, 
-                    $"Error executing {request.GetType().FullName}, " +
-                    $"exception={exception.Message}",
-                    exception);
+                logger.Error(exception,
+                    "Error executing {requestType}",
+                    request.GetType().FullName);
                 
                 throw;
             }
