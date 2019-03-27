@@ -5,7 +5,6 @@ namespace Process.Tests.IoC
     using System.Reflection;
     using Aspects.Audit;
     using Aspects.Notifications;
-    using Domain.Time;
     using Doubles;
     using FluentValidation;
     using log4net.Core;

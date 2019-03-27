@@ -1,8 +1,6 @@
 namespace Process.Tests.Bases
 {
     using System;
-    using System.Diagnostics;
-    using Domain.Time;
     using Doubles;
     using IoC;
     using MediatR;
