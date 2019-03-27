@@ -45,10 +45,10 @@ namespace Process.Features.PurchaseOrderLine
                         });
             }
         }
-    }
-    
-    public class CancelledEvent : INotification
-    {
-        public int Id { get; set; }
+        
+        public class CancelledEvent : INotification
+        {
+            public int Id { get; set; }
+        }
     }
 }

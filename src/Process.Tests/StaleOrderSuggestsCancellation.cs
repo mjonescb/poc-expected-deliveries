@@ -5,8 +5,6 @@ namespace Process.Tests
     using Bases;
     using Domain.Time;
     using Features.PurchaseOrderLine;
-    using IoC;
-    using SimpleInjector.Lifestyles;
     using Xunit;
 
     public class StaleOrderSuggestsCancellation : ProcessTestBase
@@ -14,25 +12,22 @@ namespace Process.Tests
         [Fact]
         public async Task Test()
         {
-            using(AsyncScopedLifestyle.BeginScope(ContainerFactory.Instance))
+            await Mediator().Send(new Create.Command
             {
-                await Mediator().Send(new Create.Command
-                {
-                    PurchaseOrderLineId = 1,
-                    Quantity = 100,
-                    DeliveryDate = DateTime.Today.AddDays(7)
-                });
+                PurchaseOrderLineId = 1,
+                Quantity = 100,
+                DeliveryDate = DateTime.Today.AddDays(7)
+            });
 
-                using(Clock.Adjust(TimeSpan.FromDays(68)))
+            using(Clock.Instance.Adjust(TimeSpan.FromDays(68)))
+            {
+                await Mediator().Send(new Review.Command
                 {
-                    await Mediator().Send(new Review.Command
-                    {
-                        PurchaseOrderLineId = 1,
-                    });
-                }
-                
-                Assert.True(Notifications().WasReceived<Review.CancellationSuggestedEvent>());
+                    PurchaseOrderLineId = 1
+                });
             }
+            
+            Assert.True(Notifications().WasReceived<Review.CancellationSuggestedEvent>());
         }
     }
 }

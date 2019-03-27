@@ -6,6 +6,8 @@ namespace Process.Features.PurchaseOrderLine
     using MediatR;
     using Pipeline;
     using Domain.PurchaseOrderLine;
+    using Domain.Time;
+    using FluentValidation;
     using Ports;
 
     public class Create
@@ -15,6 +17,28 @@ namespace Process.Features.PurchaseOrderLine
             public int PurchaseOrderLineId { get; set; }
             public DateTime DeliveryDate { get; set; }
             public int Quantity { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Command>
+        {
+            public Validator()
+            {
+                RuleFor(x => x.DeliveryDate)
+                    .Must(BeAfterToday);
+
+                RuleFor(x => x.Quantity)
+                    .Must(BeAPositiveInteger);
+            }
+
+            bool BeAPositiveInteger(int arg)
+            {
+                return arg > 0;
+            }
+
+            bool BeAfterToday(DateTime arg)
+            {
+                return arg > Clock.Instance.Now;
+            }
         }
 
         public class Handler : IRequestHandler<Command, CommandResult>

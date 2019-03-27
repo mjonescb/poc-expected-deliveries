@@ -3,7 +3,9 @@ namespace Process.Tests.IoC
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using Aspects.Audit;
     using Aspects.Notifications;
+    using Domain.Time;
     using Doubles;
     using FluentValidation;
     using log4net.Core;
@@ -56,7 +58,9 @@ namespace Process.Tests.IoC
             // post-processors
             container.Collection.Register(
                 typeof(IRequestPostProcessor<,>),
-                new[] { typeof(NotificationsSender<,>) } );
+                new[] {
+                    typeof(NotificationsSender<,>),
+                    typeof(RequestAuditor<,>) } );
 
             // validators
             container.Collection.Register(typeof(IValidator<>), assemblies);

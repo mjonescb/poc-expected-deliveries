@@ -38,7 +38,7 @@ namespace Process.Features.PurchaseOrderLine
                 {
                     result = result
                         .WithNotification(
-                            new CancellationSuggestedEvent()
+                            new CancellationSuggestedEvent
                             {
                                 PurchaseOrderLineId = request.PurchaseOrderLineId
                             });

@@ -1,43 +1,78 @@
 namespace Domain.Time
 {
     using System;
+    using System.Diagnostics;
     using System.Threading;
 
     public class Clock
     {
-        static AsyncLocal<Clock> CurrentValue { get; }
+        readonly TimeSpan offset;
 
-        public static Clock Current => CurrentValue.Value;
+        static AsyncLocal<Clock> currentValue;
+
+        public static Clock Instance
+        {
+            get
+            {
+                if(currentValue == null)
+                {
+                    currentValue = new AsyncLocal<Clock> { Value = new Clock() };
+                }
+
+                if(currentValue.Value == null)
+                {
+                    currentValue.Value = new Clock();
+                }
+
+                return currentValue.Value;
+            }
+        }
 
         static Clock()
         {
-            CurrentValue = new AsyncLocal<Clock>() { Value = new Clock() };
+            currentValue = new AsyncLocal<Clock>
+            {
+                Value = new Clock()
+            };
         }
-        
-        readonly TimeSpan offset;
 
-        Clock(TimeSpan offset)
+        public DateTime Now => DateTime.Now + offset;
+        
+        public Clock() : this(TimeSpan.Zero)
+        {
+        }
+
+        public Clock(TimeSpan offset)
         {
             this.offset = offset;
         }
 
-        Clock() : this(TimeSpan.Zero)
+        public IDisposable Adjust(TimeSpan newOffset)
         {
-        }
-
-        public DateTime GetNow() => DateTime.UtcNow + offset;
-
-        public static IDisposable Adjust(TimeSpan offset)
-        {
-            CurrentValue.Value = new Clock(offset);
+            Trace.WriteLine("Adjust");
+            currentValue.Value = new Clock(newOffset);
+            Trace.WriteLine("Adjust end");
             return new Disposer();
         }
 
-        class Disposer : IDisposable
+        public override string ToString()
+        {
+            if(offset == TimeSpan.Zero)
+            {
+                return "No offset";
+            }
+
+            Trace.WriteLine("Offset = " + offset.TotalSeconds);
+            return offset.ToString();
+        }
+
+        public class Disposer : IDisposable
         {
             public void Dispose()
             {
-                CurrentValue.Value = new Clock();
+                Trace.WriteLine("Dispose");
+                currentValue.Value = new Clock();
+                Trace.WriteLine("Dispose end");
             }
         }
     }

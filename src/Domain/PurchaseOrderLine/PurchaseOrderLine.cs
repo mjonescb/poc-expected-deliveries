@@ -21,6 +21,8 @@
             this.expectedQuantity = expectedQuantity;
         }
 
+        public int ExpectedQuantity => this.expectedQuantity;
+
         public void Cancel()
         {
             isCancelled = true;
@@ -33,7 +35,7 @@
                 return ReviewOutcome.None;
             }
 
-            if(Clock.Current.GetNow() + TimeSpan.FromDays(60) > expectedDeliveryDate)
+            if(Clock.Instance.Now + TimeSpan.FromDays(60) > expectedDeliveryDate)
             {
                 return new CancellationSuggested();
             }
