@@ -3,6 +3,7 @@ namespace Process.Features.PurchaseOrderLine
     using System.Threading;
     using System.Threading.Tasks;
     using Domain.PurchaseOrderLine;
+    using FluentValidation;
     using MediatR;
     using Pipeline;
     using Ports;
@@ -12,6 +13,24 @@ namespace Process.Features.PurchaseOrderLine
         public class Command : Pipeline.Command
         {
             public int PurchaseOrderLineId { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Command>
+        {
+            readonly IDocumentStore documentStore;
+
+            public Validator(IDocumentStore documentStore)
+            {
+                this.documentStore = documentStore;
+                
+                RuleFor(x => x.PurchaseOrderLineId)
+                    .MustAsync(Exist);
+            }
+
+            Task<bool> Exist(int arg1, CancellationToken arg2)
+            {
+                return documentStore.ExistsAsync(arg1.ToString());
+            }
         }
 
         public class Handler : IRequestHandler<Command, CommandResult>
@@ -27,15 +46,16 @@ namespace Process.Features.PurchaseOrderLine
                 Command request,
                 CancellationToken cancellationToken)
             {
-                PurchaseOrderLine aggregate = await store
-                    .GetAsync<PurchaseOrderLine>(
-                        request.PurchaseOrderLineId.ToString());
-                
+                Document doc = await store.GetAsync<Document>(
+                    request.PurchaseOrderLineId.ToString());
+
+                PurchaseOrderLine aggregate = new PurchaseOrderLine(doc);
+
                 aggregate.Cancel();
 
                 await store.StoreAsync(
                     request.PurchaseOrderLineId.ToString(),
-                    aggregate);
+                    aggregate.ToDocument());
 
                 return CommandResult.Void
                     .WithNotification(

@@ -6,6 +6,7 @@ namespace Process.Features.PurchaseOrderLine
     using Pipeline;
     using Ports;
     using Domain.PurchaseOrderLine;
+    using FluentValidation;
 
     public class Review 
     {
@@ -14,6 +15,24 @@ namespace Process.Features.PurchaseOrderLine
             public int PurchaseOrderLineId { get; set; }
         }
 
+        public class Validator : AbstractValidator<Command>
+        {
+            readonly IDocumentStore documentStore;
+
+            public Validator(IDocumentStore documentStore)
+            {
+                this.documentStore = documentStore;
+                
+                RuleFor(x => x.PurchaseOrderLineId)
+                    .MustAsync(Exist);
+            }
+
+            Task<bool> Exist(int arg1, CancellationToken arg2)
+            {
+                return documentStore.ExistsAsync(arg1.ToString());
+            }
+        }
+        
         public class Handler : IRequestHandler<Command, CommandResult>
         {
             readonly IDocumentStore store;
@@ -27,10 +46,12 @@ namespace Process.Features.PurchaseOrderLine
                 Command request,
                 CancellationToken cancellationToken)
             {
-                PurchaseOrderLine subject = await store
-                    .GetAsync<PurchaseOrderLine>(request.PurchaseOrderLineId.ToString());
+                Document doc = await store.GetAsync<Document>(
+                    request.PurchaseOrderLineId.ToString());
 
-                ReviewOutcome reviewResult = subject.Review();
+                PurchaseOrderLine aggregate = new PurchaseOrderLine(doc);
+                
+                ReviewOutcome reviewResult = aggregate.Review();
 
                 CommandResult result = CommandResult.Void;
                 

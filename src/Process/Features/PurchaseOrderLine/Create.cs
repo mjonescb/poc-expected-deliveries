@@ -21,13 +21,28 @@ namespace Process.Features.PurchaseOrderLine
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            readonly IDocumentStore documentStore;
+            
+            public Validator(IDocumentStore documentStore)
             {
+                this.documentStore = documentStore;
+                
+                RuleFor(x => x.PurchaseOrderLineId)
+                    .MustAsync(NotAlreadyExist);
+                
                 RuleFor(x => x.DeliveryDate)
                     .Must(BeAfterToday);
 
                 RuleFor(x => x.Quantity)
                     .Must(BeAPositiveInteger);
+            }
+
+            async Task<bool> NotAlreadyExist(
+                int arg,
+                CancellationToken cancellationToken)
+            {
+                bool result = await documentStore.ExistsAsync(arg.ToString());
+                return !result;
             }
 
             bool BeAPositiveInteger(int arg)
@@ -61,7 +76,7 @@ namespace Process.Features.PurchaseOrderLine
 
                 await docStore.StoreAsync(
                     request.PurchaseOrderLineId.ToString(),
-                    aggregate);
+                    aggregate.ToDocument());
 
                 return CommandResult.Void
                     .WithNotification(

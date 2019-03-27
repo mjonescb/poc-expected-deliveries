@@ -1,59 +1,60 @@
 ﻿namespace Domain.PurchaseOrderLine
 {
     using System;
+    using Ports;
     using Time;
 
-    public class PurchaseOrderLine
+    public class PurchaseOrderLine : ISerializeToDocument<Document>
     {
-        readonly int id;
-        readonly DateTime expectedDeliveryDate;
-        readonly int expectedQuantity;
+        Document document;
 
-        bool isCancelled;
+        public PurchaseOrderLine(Document document)
+        {
+            this.document = document;
+        }
 
         public PurchaseOrderLine(
             int id,
             DateTime expectedDeliveryDate,
             int expectedQuantity)
         {
-            this.id = id;
-            this.expectedDeliveryDate = expectedDeliveryDate;
-            this.expectedQuantity = expectedQuantity;
+            document = new Document
+            {
+                State = State.Submitted,
+                Id = id,
+                ExpectedQuantity = expectedQuantity,
+                ExpectedDeliveryDate = expectedDeliveryDate
+            };
         }
-
-        public int ExpectedQuantity => this.expectedQuantity;
 
         public void Cancel()
         {
-            isCancelled = true;
+            document.State = State.Cancelled;
         }
 
         public ReviewOutcome Review()
         {
-            if(isCancelled)
+            if(document.State == State.Cancelled)
             {
                 return ReviewOutcome.None;
             }
 
-            if(Clock.Instance.Now + TimeSpan.FromDays(60) > expectedDeliveryDate)
+            if(Clock.Instance.Now + TimeSpan.FromDays(60) > document.ExpectedDeliveryDate)
             {
                 return new CancellationSuggested();
             }
             
             return ReviewOutcome.None;
         }
-    }
 
-    public class ReviewOutcome
-    {
-        public static readonly ReviewOutcome None = new ReviewOutcome();
-
-        protected ReviewOutcome()
+        public Document ToDocument()
         {
+            return document;
         }
-    }
 
-    public class CancellationSuggested : ReviewOutcome
-    {
+        public void Load(Document document)
+        {
+            this.document = document;
+        }
     }
 }
