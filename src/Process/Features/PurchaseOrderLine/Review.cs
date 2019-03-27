@@ -9,7 +9,7 @@ namespace Process.Features.PurchaseOrderLine
 
     public class Review 
     {
-        public class Command : IRequest<CommandResult>
+        public class Command : Pipeline.Command
         {
             public int PurchaseOrderLineId { get; set; }
         }

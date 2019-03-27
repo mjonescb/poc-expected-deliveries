@@ -9,7 +9,7 @@ namespace Process.Features.PurchaseOrderLine
 
     public class Cancel
     {
-        public class Command : IRequest<CommandResult>
+        public class Command : Pipeline.Command
         {
             public int PurchaseOrderLineId { get; set; }
         }

@@ -12,7 +12,7 @@ namespace Process.Features.PurchaseOrderLine
 
     public class Create
     {
-        public class Command : IRequest<CommandResult>
+        public class Command : Pipeline.Command
         {
             public int PurchaseOrderLineId { get; set; }
             public DateTime DeliveryDate { get; set; }
